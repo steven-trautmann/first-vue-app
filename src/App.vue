@@ -1,54 +1,18 @@
 <template>
-  <div class="container">
-    <p>{{ user.userName }} -is- {{ fullname }}</p>
-    <strong>Followers: {{followers}}</strong>
-    <button @click="increaseFollowers">Increase Followers</button>
-    <button @click="decreaseFollowers">Decrease Followers</button>
-  </div>
+  <UserProfile/>
 </template>
 
 <script>
+import UserProfile from "./components/UserProfile"
+
 export default {
+
   name: 'App',
   components: {
+    UserProfile
   },
-  data(){
-    return {
-      followers: 0,
-      user: {
-        id: 1,
-        userName: "BMarge",
-        firstName: "Margharet",
-        lastName: "Black",
-        email: "test@gmail.com",
-        isAdmin: true
-      }
-    }
-  },
-  watch: {
-    followers(newCount, oldCount){
-      if (oldCount < newCount){
-        console.log(this.user.userName + "has gained a new follower!!")
-      }
-    }
-  },
-  computed: {
-    fullname(){return `${this.user.firstName} ${this.user.lastName}`}
-  },
-  methods: {
-    increaseFollowers(){this.followers++},
-    decreaseFollowers(){this.followers--},
-  },
-  mounted() {
-    return this.increaseFollowers();
-  }
 }
 </script>
 
 <style>
-.container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
 </style>
