@@ -1,26 +1,54 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <p>{{ user.userName }} -is- {{ fullname }}</p>
+    <strong>Followers: {{followers}}</strong>
+    <button @click="increaseFollowers">Increase Followers</button>
+    <button @click="decreaseFollowers">Decrease Followers</button>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
   components: {
-    HelloWorld
+  },
+  data(){
+    return {
+      followers: 0,
+      user: {
+        id: 1,
+        userName: "BMarge",
+        firstName: "Margharet",
+        lastName: "Black",
+        email: "test@gmail.com",
+        isAdmin: true
+      }
+    }
+  },
+  watch: {
+    followers(newCount, oldCount){
+      if (oldCount < newCount){
+        console.log(this.user.userName + "has gained a new follower!!")
+      }
+    }
+  },
+  computed: {
+    fullname(){return `${this.user.firstName} ${this.user.lastName}`}
+  },
+  methods: {
+    increaseFollowers(){this.followers++},
+    decreaseFollowers(){this.followers--},
+  },
+  mounted() {
+    return this.increaseFollowers();
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 </style>
