@@ -14,33 +14,18 @@
                     :key="index" :thought="thought" 
                     :user="user.userName" @favourite="toggleFavourite" />
   </div>
-  <div>
-    <form style="display: flex; flex-direction: column; margin: 5rem" 
-    @submit.prevent="saveNewThought">
-      <label for="newThought">new thought: ({{newThoughtContendCount}}:180)</label>
-      <textarea name="newThought" rows="4" v-model="newThoughtContent" :class="{'exceeded': newThoughtContendCount > 180}"></textarea>
-      <label for="types">Types:</label>
-      <select name="types" v-model="selectedThoughtType" >
-        <option :value="option.value" v-for="(option, index) in thoughtTypes" :key="index">
-          {{option.name}}
-        </option>
-      </select>
-      <button>Save Thought</button>
-    </form>
-  </div>
+  <CreateThoughtPanel @saveThought="saveNewThought" />
 </template>
 
 <script>
 import ThoughtItem from "./ThoughtItem"
+import CreateThoughtPanel from "./CreateThoughtPanel"
 
 export default {
     name: "UserProfile",
     data(){
     return {
-      thoughtTypes: [{value: "draft", name: "Draft"}, {value: "suicidal", name: "Suicidal"}],
       followers: 0,
-      newThoughtContent: "",
-      selectedThoughtType: "draft",
       user: {
         id: 1,
         userName: "BMarge",
@@ -64,8 +49,7 @@ export default {
     }
   },
   computed: {
-    fullname(){return `${this.user.firstName} ${this.user.lastName}`},
-    newThoughtContendCount(){return this.newThoughtContent.length}
+    fullname(){return `${this.user.firstName} ${this.user.lastName}`}
   },
   methods: {
     increaseFollowers(){this.followers++},
@@ -73,18 +57,16 @@ export default {
     toggleFavourite(id){
       alert(`favourited thought's number: ${id}`)
     },
-    saveNewThought(){
-      if (this.newThoughtContent !== "" && this.selectedThoughtType !== "draft"){
-        this.user.thoughts.unshift({id: this.user.thoughts[0].id+1, time: new Date().toDateString(), content: this.newThoughtContent });
-        this.newThoughtContent = "";
-      }
+    saveNewThought(thought){
+        this.user.thoughts.unshift({id: this.user.thoughts[0].id+1, time: thought.time, content: thought.content });
     }
   },
   mounted() {
     return this.increaseFollowers();
   },
   components: {
-    ThoughtItem
+    ThoughtItem,
+    CreateThoughtPanel
   }
 }
 </script>
@@ -95,8 +77,4 @@ export default {
     justify-content: space-around;
     align-items: center;
     }
-
-    .exceeded {
-        border: solid 0.2rem red;
-      }
 </style>
