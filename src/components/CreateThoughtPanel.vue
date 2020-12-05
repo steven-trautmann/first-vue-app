@@ -2,10 +2,10 @@
     <form style="display: flex; flex-direction: column; margin: 5rem" 
     @submit.prevent="saveNewThought">
         <label for="newThought">new thought: ({{newThoughtContendCount}}:180)</label>
-        <textarea name="newThought" rows="4" v-model="newThoughtContent" :class="{'exceeded': newThoughtContendCount > 180}"></textarea>
+        <textarea name="newThought" rows="4" v-model="state.newThoughtContent" :class="{'exceeded': newThoughtContendCount > 180}"></textarea>
         <label for="types">Types:</label>
-        <select name="types" v-model="selectedThoughtType" >
-        <option :value="option.value" v-for="(option, index) in thoughtTypes" :key="index">
+        <select name="types" v-model="state.selectedThoughtType" >
+        <option :value="option.value" v-for="(option, index) in state.thoughtTypes" :key="index">
             {{option.name}}
         </option>
         </select>
@@ -14,28 +14,28 @@
 </template>
 
 <script>
+import {reactive, computed} from "vue";
+
 export default {
     name: "CreateThoughtPanel",
-    data(){
-        return {
+    setup(props, ctx){
+        const state = reactive({
             thoughtTypes: [{value: "draft", name: "Draft"}, {value: "suicidal", name: "Suicidal"}],
             newThoughtContent: "",
             selectedThoughtType: "draft",
+        });
+
+        const newThoughtContendCount =  computed(() => {return state.newThoughtContent.length})
+
+        function saveNewThought(){
+            if (state.newThoughtContent !== "" && state.selectedThoughtType !== "draft"){
+                ctx.emit("saveThought", {time: new Date().toDateString(), content: state.newThoughtContent });
+                state.newThoughtContent = "";
+            }
         }
-    },
-    computed: {
-        newThoughtContendCount(){return this.newThoughtContent.length}
-    },
-    methods: {
-        saveNewThought(){
-        if (this.newThoughtContent !== "" && this.selectedThoughtType !== "draft"){
 
-            this.$emit("saveThought", {time: new Date().toDateString(), content: this.newThoughtContent });
-            this.newThoughtContent = "";
-      }
-}
+        return {state, newThoughtContendCount, saveNewThought};
     }
-
 }
 </script>
 
